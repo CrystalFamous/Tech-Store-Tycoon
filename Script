@@ -1,0 +1,83 @@
+local player = game:GetService("Players").LocalPlayer.Character
+local tycoons = workspace["Zednov's Tycoon Kit"].Tycoons
+local playername = game:GetService("Players").LocalPlayer.Name
+function meow()
+	local function AbrevToNumber(nr_string)
+		local number = string.gsub(nr_string, "%D", "")
+		local astring = string.gsub(nr_string, "+", "")
+		local abreviation = string.gsub(astring,".%d","")
+		
+		if abreviation == "M" then
+			number *= 1000000
+		end
+		if abreviation:match("K") and astring == "+" then
+			number *= 1000
+			elseif abreviation == "K" then
+				number *= 100
+			
+			end
+		if string.len(number) == 2 then
+			number *= 100
+		end
+		print(number)
+		return tonumber(number)
+
+	end
+
+	for _,v in pairs(tycoons:GetChildren()) do
+		
+		for _,q in pairs(v:GetChildren()) do
+			if q.Name == "Owner" and tostring(q.Value) == playername then
+				local OwnedTycoon = q.Parent
+				print(OwnedTycoon)
+				
+				for _,t in pairs(OwnedTycoon:GetChildren()) do
+					if t.Name == "Buttons" then
+						for _,y in pairs(t:GetDescendants()) do
+							if y.Name:match("Robux") then
+								y:Destroy()
+							
+							elseif y.Name == "TouchInterest" and y.Parent.Transparency ~= 1 and y.Parent.CanCollide == true then
+								print(y.Parent.Parent)
+								for _,l in pairs(y.Parent.Parent:GetChildren()) do
+									wait(0.1)
+									if l.Name == "Price" then
+										local price = tonumber(l.Value)
+										local playerstats = game:GetService("Players").LocalPlayer.leaderstats.Cash.Value
+										print("Player Money: "..playerstats)
+										if AbrevToNumber(playerstats) >= price  then
+											player:MoveTo(y.Parent.Position)
+											
+										else
+											print(l.Parent)
+											function collect()
+												for _,g in pairs(OwnedTycoon:GetChildren()) do
+													if g.Name == "Essentials" then
+														for _,h in pairs(g:GetChildren()) do
+															if h.Name == "Giver" then
+																player:MoveTo(h.Position)
+															end
+														end
+
+													end
+												end
+
+											end
+											collect()
+										end
+									end
+								end
+								
+							
+							end			
+						end
+					end
+				end
+			end
+		end
+	end
+end
+while true do wait(5)
+	meow()
+end
+--Keep executing after each 2 seconds until it runs without stopping // this is due to me being lazy
